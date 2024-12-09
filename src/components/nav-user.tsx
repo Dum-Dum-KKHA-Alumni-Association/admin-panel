@@ -6,7 +6,6 @@ import {
 	ChevronsUpDown,
 	CreditCard,
 	LogOut,
-	Sparkles,
 } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -25,17 +24,20 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from '@/components/ui/sidebar';
+import { useAuth } from '@clerk/nextjs';
 
 export function NavUser({
 	user,
 }: {
 	user: {
-		name: string;
-		email: string;
-		avatar: string;
+		name?: string;
+		email?: string;
+		avatar?: string;
 	};
 }) {
 	const { isMobile } = useSidebar();
+
+	const auth = useAuth();
 
 	return (
 		<SidebarMenu>
@@ -76,18 +78,19 @@ export function NavUser({
 							</div>
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
-						<DropdownMenuGroup>
+						{/* <DropdownMenuGroup>
 							<DropdownMenuItem>
 								<Sparkles />
 								Upgrade to Pro
 							</DropdownMenuItem>
-						</DropdownMenuGroup>
+						</DropdownMenuGroup> */}
+						<DropdownMenuItem>
+							<BadgeCheck />
+							Account
+						</DropdownMenuItem>
+
 						<DropdownMenuSeparator />
 						<DropdownMenuGroup>
-							<DropdownMenuItem>
-								<BadgeCheck />
-								Account
-							</DropdownMenuItem>
 							<DropdownMenuItem>
 								<CreditCard />
 								Billing
@@ -98,7 +101,7 @@ export function NavUser({
 							</DropdownMenuItem>
 						</DropdownMenuGroup>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem>
+						<DropdownMenuItem onClick={() => auth.signOut()}>
 							<LogOut />
 							Log out
 						</DropdownMenuItem>
