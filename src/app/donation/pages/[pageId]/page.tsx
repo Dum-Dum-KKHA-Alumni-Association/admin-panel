@@ -9,8 +9,23 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import React from 'react';
+import DonationPageEditForm from './formEdit-donation';
 
-const DonationListPage = () => {
+const CreateDonationPage = async ({
+	params,
+}: {
+	params: Promise<{ pageId: string }>;
+}) => {
+	const response = await fetch(
+		`${process.env.NEXT_PUBLIC_API_URL}/donation/page/id/${(await params).pageId}`,
+		{
+			cache: 'no-store',
+		}
+	);
+	const { data } = await response.json();
+
+	const donationPage: DonationPageResponse = data;
+
 	return (
 		<SidebarInset>
 			<header className="flex h-16 shrink-0 items-center gap-2">
@@ -27,23 +42,28 @@ const DonationListPage = () => {
 								<BreadcrumbLink href="/donations">Donation</BreadcrumbLink>
 							</BreadcrumbItem>
 							<BreadcrumbSeparator className="hidden md:block" />
+							<BreadcrumbItem className="hidden md:block">
+								<BreadcrumbLink href="/donation/donation-pages">
+									Page
+								</BreadcrumbLink>
+							</BreadcrumbItem>
+							<BreadcrumbSeparator className="hidden md:block" />
 							<BreadcrumbItem>
-								<BreadcrumbPage>List All Donations</BreadcrumbPage>
+								<BreadcrumbPage>Edit</BreadcrumbPage>
+							</BreadcrumbItem>
+							<BreadcrumbSeparator className="hidden md:block" />
+							<BreadcrumbItem>
+								<BreadcrumbPage>{(await params).pageId}</BreadcrumbPage>
 							</BreadcrumbItem>
 						</BreadcrumbList>
 					</Breadcrumb>
 				</div>
 			</header>
 			<div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-				<div className="grid auto-rows-min gap-4 md:grid-cols-3">
-					<div className="aspect-video rounded-xl bg-muted/50" />
-					<div className="aspect-video rounded-xl bg-muted/50" />
-					<div className="aspect-video rounded-xl bg-muted/50" />
-				</div>
-				<div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+				<DonationPageEditForm donationPage={donationPage} />
 			</div>
 		</SidebarInset>
 	);
 };
 
-export default DonationListPage;
+export default CreateDonationPage;

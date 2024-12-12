@@ -1,8 +1,14 @@
 'use client';
-import React from 'react';
+import {
+	Card,
+	CardContent,
+	CardFooter,
+	CardHeader,
+} from '@/components/ui/card';
+import React, { FC } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { donationPageFormSchema } from '../../../schemas/FormSchema';
+
 import { z } from 'zod';
 import {
 	Form,
@@ -27,27 +33,30 @@ import {
 import { cn } from '@/lib/utils';
 import axios from 'axios';
 import { useAuth } from '@clerk/nextjs';
-import {
-	Dialog,
-	DialogClose,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from '@/components/ui/dialog';
+import { donationPageEditFormSchema } from '@/schemas/FormSchema';
 
-const DonationForm = () => {
+interface DonationPageEditFormProps {
+	donationPage: DonationPageResponse;
+}
+
+const DonationPageEditForm: FC<DonationPageEditFormProps> = ({
+	donationPage,
+}) => {
 	const { getToken } = useAuth();
 
-	const donatioForm = useForm<z.infer<typeof donationPageFormSchema>>({
-		resolver: zodResolver(donationPageFormSchema),
-		defaultValues: {},
+	const donationForm = useForm<z.infer<typeof donationPageEditFormSchema>>({
+		resolver: zodResolver(donationPageEditFormSchema),
+		defaultValues: {
+			title: donationPage.title,
+			slug: donationPage.slug,
+			description: donationPage.description,
+			targetAmount: donationPage.targetAmount,
+			expirationDate: donationPage.expirationDate,
+		},
 	});
 
 	// 2. Define a submit handler.
-	async function onSubmit(values: z.infer<typeof donationPageFormSchema>) {
+	async function onSubmit(values: z.infer<typeof donationPageEditFormSchema>) {
 		// Do something with the form values.
 		// ✅ This will be type-safe and validated.
 		console.log(values);
@@ -81,25 +90,23 @@ const DonationForm = () => {
 			console.log(error);
 		}
 	}
+
+	const { formState } = donationForm;
+
+	const isChanged = formState.isDirty; // Becomes true if any field is modified
 	return (
-		<Dialog>
-			<DialogTrigger asChild>
-				<Button>Create</Button>
-			</DialogTrigger>
-			<DialogContent className="h-screen overflow-y-auto sm:h-auto sm:max-w-[800px]">
-				<Form {...donatioForm}>
-					<DialogHeader>
-						<DialogTitle>Create a new Donation Page</DialogTitle>
-						<DialogDescription>
-							Create a new Donation Page for people to give Donation.
-						</DialogDescription>
-					</DialogHeader>
+		<Card>
+			<Form {...donationForm}>
+				<CardHeader>
+					<h1 className="text-3xl font-bold">Edit {donationPage.title}</h1>
+				</CardHeader>
+				<CardContent>
 					<form
-						onSubmit={donatioForm.handleSubmit(onSubmit)}
+						onSubmit={donationForm.handleSubmit(onSubmit)}
 						className="space-y-4"
 					>
 						<FormField
-							control={donatioForm.control}
+							control={donationForm.control}
 							name="title"
 							render={({ field }) => (
 								<FormItem>
@@ -112,14 +119,14 @@ const DonationForm = () => {
 							)}
 						/>
 						<FormField
-							control={donatioForm.control}
+							control={donationForm.control}
 							name="slug"
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>URL</FormLabel>
 									<FormControl>
 										<div className="flex h-fit w-full items-center">
-											<div className="flex h-9 w-1/2 items-center truncate text-ellipsis rounded-l-lg bg-gray-200 px-2 py-1 text-sm text-slate-800 sm:w-[24rem]">
+											<div className="flex h-9 items-center rounded-l-lg border bg-gray-200 px-2 py-1 text-sm text-slate-800">
 												{`${process.env.NEXT_PUBLIC_FRONTEND_URL}/donations/`}
 											</div>
 
@@ -131,7 +138,7 @@ const DonationForm = () => {
 							)}
 						/>
 						<FormField
-							control={donatioForm.control}
+							control={donationForm.control}
 							name="description"
 							render={({ field }) => (
 								<FormItem>
@@ -148,7 +155,7 @@ const DonationForm = () => {
 							)}
 						/>
 						<FormField
-							control={donatioForm.control}
+							control={donationForm.control}
 							name="thumbnail"
 							render={({ field }) => (
 								<FormItem>
@@ -169,7 +176,7 @@ const DonationForm = () => {
 							)}
 						/>
 						<FormField
-							control={donatioForm.control}
+							control={donationForm.control}
 							name="targetAmount"
 							render={({ field }) => (
 								<FormItem>
@@ -183,7 +190,7 @@ const DonationForm = () => {
 							)}
 						/>
 						<FormField
-							control={donatioForm.control}
+							control={donationForm.control}
 							name="expirationDate"
 							render={({ field }) => (
 								<FormItem className="flex flex-col">
@@ -225,21 +232,15 @@ const DonationForm = () => {
 								</FormItem>
 							)}
 						/>
-
-						<DialogFooter className="gap-3 pt-6">
-							<DialogClose asChild>
-								<Button type="button" variant="secondary">
-									Close
-								</Button>
-							</DialogClose>
-
-							<Button type="submit">Submit</Button>
-						</DialogFooter>
+						<Button type="submit" disabled={!isChanged}>
+							Update
+						</Button>
 					</form>
-				</Form>
-			</DialogContent>
-		</Dialog>
+				</CardContent>
+				<CardFooter></CardFooter>
+			</Form>
+		</Card>
 	);
 };
 
-export default DonationForm;
+export default DonationPageEditForm;
