@@ -174,21 +174,12 @@ const data = {
 
 			items: [
 				{
-					title: 'create a new Donation Page',
-					isActive: true,
-					url: '/donation/create',
+					title: 'Donations Pages',
+					url: '/donation/pages',
 				},
 				{
-					title: 'List all Donations Pages',
-					url: '/donation/list-donation-pages',
-				},
-				{
-					title: 'List all Donations ',
-					url: '/donation/list-donations',
-				},
-				{
-					title: 'Payments',
-					url: '/donation/payments',
+					title: 'Responses',
+					url: '/donation/responses',
 				},
 			],
 		},
@@ -277,7 +268,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 											<SidebarMenuSubItem key={item.title}>
 												<SidebarMenuSubButton
 													asChild
-													isActive={pathname === item.url}
+													isActive={pathname.startsWith(item.url)}
 												>
 													<a href={item.url}>{item.title}</a>
 												</SidebarMenuSubButton>
