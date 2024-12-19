@@ -81,12 +81,12 @@ const DonationListPage = async () => {
 					<DonationForm />
 				</div>
 
-				<div className="flex w-full flex-col">
+				<div className="flex w-full flex-col gap-3">
 					{/* <DataTable columns={columns} data={donationPages} /> */}
 					{donationPages.map((page) => (
 						<Card
 							key={page.id}
-							className="flex w-full flex-col justify-between rounded-none"
+							className="flex w-full flex-col justify-between"
 						>
 							<div className="flex w-full">
 								<CardHeader className="w-full p-3">
@@ -98,6 +98,7 @@ const DonationListPage = async () => {
 											</span>
 										</CardTitle>
 									</Link>
+									<span>Date: {page.expirationDate}</span>
 									<CardDescription>{page.description}</CardDescription>
 								</CardHeader>
 								<CardContent className="flex items-center justify-center px-5 py-0">
