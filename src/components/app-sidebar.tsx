@@ -171,12 +171,7 @@ const data = {
 			title: 'Donations',
 			url: '/donation',
 			icon: HandCoins,
-
 			items: [
-				{
-					title: 'Donations Pages',
-					url: '/donation/pages',
-				},
 				{
 					title: 'Responses',
 					url: '/donation/responses',

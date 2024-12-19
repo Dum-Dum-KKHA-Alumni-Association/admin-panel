@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { donationPageFormSchema } from '../../../schemas/FormSchema';
@@ -37,13 +37,16 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 const DonationForm = () => {
 	const { getToken } = useAuth();
+	const [open, setOpen] = useState<boolean>(false);
+	const router = useRouter();
 
 	const donatioForm = useForm<z.infer<typeof donationPageFormSchema>>({
 		resolver: zodResolver(donationPageFormSchema),
-		defaultValues: {},
 	});
 
 	// 2. Define a submit handler.
@@ -54,7 +57,7 @@ const DonationForm = () => {
 		const token = await getToken();
 
 		try {
-			const data = {
+			const formData = {
 				title: values.title,
 				slug: values.slug,
 				description: values.description,
@@ -63,11 +66,10 @@ const DonationForm = () => {
 				// expirationDate: JSON.stringify(values.expirationDate, null, 2),
 				expirationDate: values.expirationDate.toISOString(),
 			};
-			console.log(data);
 
-			const response = await axios.post(
-				`${process.env.NEXT_PUBLIC_API_URL}/donation`,
-				data,
+			const { data } = await axios.post(
+				`${process.env.NEXT_PUBLIC_API_URL}/donation/page`,
+				formData,
 				{
 					headers: {
 						'Content-Type': 'application/json',
@@ -76,13 +78,17 @@ const DonationForm = () => {
 				}
 			);
 
-			console.log(response);
+			toast.success(data.message);
+			setOpen(false);
+			router.refresh();
 		} catch (error: any) {
 			console.log(error);
+			toast.success(error!.message);
+			setOpen(false);
 		}
 	}
 	return (
-		<Dialog>
+		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
 				<Button>Create</Button>
 			</DialogTrigger>
@@ -150,15 +156,19 @@ const DonationForm = () => {
 						<FormField
 							control={donatioForm.control}
 							name="thumbnail"
-							render={({ field }) => (
+							render={({ field: { ref, onChange } }) => (
 								<FormItem>
 									<FormLabel>Thumbnail</FormLabel>
 									<FormControl>
 										<Input
-											id="picture"
 											type="file"
+											accept="image/*"
+											ref={ref}
 											// className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400"
-											{...field}
+
+											onChange={(event) => {
+												onChange(event.target?.files?.[0] ?? undefined);
+											}}
 										/>
 									</FormControl>
 									<FormDescription>

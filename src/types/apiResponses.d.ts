@@ -4,6 +4,7 @@ interface DonationPageResponse {
 	slug: string;
 	description: string;
 	thumbnail?: string;
+	listOfDonors: Array<DonorResponse>;
 	targetAmount: number;
 	collectedAmount: number;
 	expirationDate: ISOStringFormat;
