@@ -25,6 +25,7 @@ import {
 	useSidebar,
 } from '@/components/ui/sidebar';
 import { useAuth } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
 
 export function NavUser({
 	user,
@@ -38,6 +39,7 @@ export function NavUser({
 	const { isMobile } = useSidebar();
 
 	const auth = useAuth();
+	const router = useRouter();
 
 	return (
 		<SidebarMenu>
@@ -101,7 +103,12 @@ export function NavUser({
 							</DropdownMenuItem>
 						</DropdownMenuGroup>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem onClick={() => auth.signOut()}>
+						<DropdownMenuItem
+							onClick={() => {
+								auth.signOut();
+								router.push('/sign-in');
+							}}
+						>
 							<LogOut />
 							Log out
 						</DropdownMenuItem>

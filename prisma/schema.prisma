@@ -1,0 +1,170 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id                     String     @id @unique
+  name                   String
+  email                  String     @unique
+  password               String
+  dateOfBirth            DateTime
+  madyamikYear           Int
+  higherSecondaryYear    Int
+  primaryNumber          Int
+  whatsappNumber         Int
+  role                   Role
+  membership             String
+  presentLocationAddress String
+  contactLocationAddress String
+  occupation             String
+  createdAt              DateTime?  @default(now())
+  updatedAt              DateTime?  @updatedAt
+  Events                 Events?    @relation(fields: [eventsId], references: [id])
+  refreshToken           String?
+  eventsId               String?
+  Attendee               Attendee[]
+}
+
+model DonationPage {
+  id              String         @id @unique @default(uuid())
+  title           String
+  slug            String         @unique
+  description     String
+  thumbnail       String?
+  listOfDonors    Donation[]
+  targetAmount    Int
+  collectedAmount Int?           @default(0)
+  expirationDate  DateTime
+  status          DonationStatus @default(ACTIVE)
+  createdAt       DateTime?      @default(now())
+  updatedAt       DateTime?      @updatedAt
+}
+
+model Donation {
+  id                  String        @id @unique @default(uuid())
+  firstName           String
+  lastName            String
+  email               String
+  primaryNumber       String
+  whatsappNumber      String
+  dateOfBirth         DateTime
+  madyamikYear        String
+  higherSecondaryYear String
+  presentAddress      String
+  contactAddress      String
+  occupation          String
+  amount              Int
+  donationPageId      String?
+  DonationPage        DonationPage? @relation(fields: [donationPageId], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  paymentId           String?       @unique
+  Payment             Payment?      @relation(fields: [paymentId], references: [id])
+  createdAt           DateTime?     @default(now())
+  updatedAt           DateTime?     @updatedAt
+}
+
+model Events {
+  id          String             @id @unique @default(uuid())
+  title       String
+  slug        String             @unique
+  description String
+  mode        EventMode
+  thumbnail   String
+  date        DateTime
+  attendee    User[]
+  status      RegistrationStatus
+  createdAt   DateTime?          @default(now())
+  updatedAt   DateTime?          @updatedAt
+  Attendee    Attendee[]
+}
+
+model Attendee {
+  id        String    @id @unique @default(uuid())
+  UserId    User      @relation(fields: [userId], references: [id])
+  EventsId  Events    @relation(fields: [eventsId], references: [id])
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+  userId    String
+  paymentId String?   @unique
+  Payment   Payment?  @relation(fields: [paymentId], references: [id])
+  eventsId  String
+}
+
+model Payment {
+  id                    String        @id @default(uuid())
+  success               Boolean? // Indicates if the payment API call was successful
+  code                  String? // Status code of the payment response (e.g., PAYMENT_SUCCESS, PAYMENT_ERROR)
+  message               String? // Response message from the gateway
+  merchantId            String // Merchant identifier
+  merchantTransactionId String        @unique // Merchant transaction ID
+  transactionId         String?       @unique // Unique transaction ID from the gateway
+  amount                Int // Amount of the transaction in smallest currency unit (e.g., cents/paisa)
+  state                 PaymentStatus @default(INITIATED) // Payment state (e.g., COMPLETED, FAILED)
+  responseCode          String? // Gateway response code
+  responseDescription   String? // Optional description for the response code
+  paymentType           String? // Payment instrument type (e.g., UPI, CARD, NETBANKING)
+
+  // UPI-specific fields
+  utr String? // Unique transaction reference for UPI payments
+
+  // Card-specific fields
+  cardType            String? // Type of card (e.g., DEBIT_CARD, CREDIT_CARD)
+  pgTransactionId     String? // Payment gateway transaction ID
+  bankTransactionId   String? // Bank transaction ID
+  pgAuthorizationCode String? // Authorization code from the payment gateway
+  arn                 String? // Acquirer Reference Number
+  bankId              String? // Bank identifier
+  brn                 String? // Bank reference number
+
+  // Netbanking-specific fields
+  pgServiceTransactionId String? // Service transaction ID for net banking
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+  Donation  Donation?
+
+  Attendee Attendee?
+}
+
+enum EventMode {
+  ONLINE
+  OFFLINE
+}
+
+enum RegistrationStatus {
+  COMPLETED
+  ONGOING
+  EXPIRED
+}
+
+enum PaymentStatus {
+  INITIATED
+  COMPLETED
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+enum DonationStatus {
+  ACTIVE
+  EXPIRED
+  COMPLETED
+  POSTPONE
+}
+
+enum Role {
+  USER
+  ADMIN
+  EDITOR
+}
