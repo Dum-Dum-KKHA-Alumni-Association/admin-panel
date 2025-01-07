@@ -1,19 +1,12 @@
 'use client';
-import {
-	Card,
-	CardContent,
-	CardFooter,
-	CardHeader,
-} from '@/components/ui/card';
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-
+import { donationPageFormSchema } from '../../../../schemas/FormSchema';
 import { z } from 'zod';
 import {
 	Form,
 	FormControl,
-	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
@@ -23,8 +16,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { Textarea } from '@/components/ui/textarea';
-import { CalendarIcon } from 'lucide-react';
-import { Calendar } from '@/components/ui/calendar';
+import { CalendarIcon, Wrench } from 'lucide-react';
+
 import {
 	Popover,
 	PopoverContent,
@@ -33,50 +26,62 @@ import {
 import { cn } from '@/lib/utils';
 import axios from 'axios';
 import { useAuth } from '@clerk/nextjs';
-import { donationPageEditFormSchema } from '@/schemas/FormSchema';
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from '@/components/ui/dialog';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import { Calendar } from '@/components/ui/calendar';
 
-interface DonationPageEditFormProps {
-	donationPage: DonationPageResponse;
+interface EditDonationForm {
+	pageData: any;
 }
 
-const DonationPageEditForm: FC<DonationPageEditFormProps> = ({
-	donationPage,
-}) => {
+const EditDonationForm: FC<EditDonationForm> = ({ pageData }) => {
 	const { getToken } = useAuth();
+	const [open, setOpen] = useState<boolean>(false);
+	const router = useRouter();
 
-	const donationForm = useForm<z.infer<typeof donationPageEditFormSchema>>({
-		resolver: zodResolver(donationPageEditFormSchema),
+	const donatioForm = useForm<z.infer<typeof donationPageFormSchema>>({
+		resolver: zodResolver(donationPageFormSchema),
 		defaultValues: {
-			title: donationPage.title,
-			slug: donationPage.slug,
-			description: donationPage.description,
-			targetAmount: donationPage.targetAmount,
-			expirationDate: donationPage.expirationDate,
+			title: pageData.title,
+			description: pageData.description,
+			targetAmount: pageData.targetAmount.toString(),
+			expirationDate: new Date(pageData.expirationDate),
 		},
 	});
 
+	console.log(pageData);
+
 	// 2. Define a submit handler.
-	async function onSubmit(values: z.infer<typeof donationPageEditFormSchema>) {
+	async function onSubmit(values: z.infer<typeof donationPageFormSchema>) {
 		// Do something with the form values.
 		// ✅ This will be type-safe and validated.
 		console.log(values);
 		const token = await getToken();
 
 		try {
-			const data = {
+			const formData = {
+				id: pageData.id,
 				title: values.title,
-				slug: values.slug,
 				description: values.description,
-				thumbnail: values.thumbnail,
+				// thumbnail: values.thumbnail,
 				targetAmount: values.targetAmount,
 				// expirationDate: JSON.stringify(values.expirationDate, null, 2),
 				expirationDate: values.expirationDate.toISOString(),
 			};
-			console.log(data);
 
-			const response = await axios.post(
-				`${process.env.NEXT_PUBLIC_API_URL}/donation`,
-				data,
+			const { data } = await axios.put(
+				`${process.env.NEXT_PUBLIC_API_URL}/donation/page`,
+				formData,
 				{
 					headers: {
 						'Content-Type': 'application/json',
@@ -85,28 +90,37 @@ const DonationPageEditForm: FC<DonationPageEditFormProps> = ({
 				}
 			);
 
-			console.log(response);
+			toast.success(data.message);
+			setOpen(false);
+			router.refresh();
 		} catch (error: any) {
 			console.log(error);
+			toast.success(error!.message);
+			setOpen(false);
 		}
 	}
-
-	const { formState } = donationForm;
-
-	const isChanged = formState.isDirty; // Becomes true if any field is modified
 	return (
-		<Card>
-			<Form {...donationForm}>
-				<CardHeader>
-					<h1 className="text-3xl font-bold">Edit {donationPage.title}</h1>
-				</CardHeader>
-				<CardContent>
+		<Dialog open={open} onOpenChange={setOpen}>
+			<DialogTrigger asChild>
+				<Button variant={'ghost'} className="w-full justify-start gap-2 px-2">
+					{' '}
+					<Wrench /> Edit
+				</Button>
+			</DialogTrigger>
+			<DialogContent className="h-screen overflow-y-auto sm:h-auto sm:max-w-[800px]">
+				<Form {...donatioForm}>
+					<DialogHeader>
+						<DialogTitle>Edit</DialogTitle>
+						<DialogDescription>
+							Create a new Donation Page for people to give Donation.
+						</DialogDescription>
+					</DialogHeader>
 					<form
-						onSubmit={donationForm.handleSubmit(onSubmit)}
+						onSubmit={donatioForm.handleSubmit(onSubmit)}
 						className="space-y-4"
 					>
 						<FormField
-							control={donationForm.control}
+							control={donatioForm.control}
 							name="title"
 							render={({ field }) => (
 								<FormItem>
@@ -118,27 +132,9 @@ const DonationPageEditForm: FC<DonationPageEditFormProps> = ({
 								</FormItem>
 							)}
 						/>
-						<FormField
-							control={donationForm.control}
-							name="slug"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>URL</FormLabel>
-									<FormControl>
-										<div className="flex h-fit w-full items-center">
-											<div className="flex h-9 items-center rounded-l-lg border bg-gray-200 px-2 py-1 text-sm text-slate-800">
-												{`${process.env.NEXT_PUBLIC_FRONTEND_URL}/donations/`}
-											</div>
 
-											<Input className="rounded-l-none" {...field} />
-										</div>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
 						<FormField
-							control={donationForm.control}
+							control={donatioForm.control}
 							name="description"
 							render={({ field }) => (
 								<FormItem>
@@ -154,18 +150,22 @@ const DonationPageEditForm: FC<DonationPageEditFormProps> = ({
 								</FormItem>
 							)}
 						/>
-						<FormField
-							control={donationForm.control}
+						{/* <FormField
+							control={donatioForm.control}
 							name="thumbnail"
-							render={({ field }) => (
+							render={({ field: { ref, onChange } }) => (
 								<FormItem>
 									<FormLabel>Thumbnail</FormLabel>
 									<FormControl>
 										<Input
-											id="picture"
 											type="file"
+											accept="image/*"
+											ref={ref}
 											// className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400"
-											{...field}
+
+											onChange={(event) => {
+												onChange(event.target?.files?.[0] ?? undefined);
+											}}
 										/>
 									</FormControl>
 									<FormDescription>
@@ -174,9 +174,9 @@ const DonationPageEditForm: FC<DonationPageEditFormProps> = ({
 									<FormMessage />
 								</FormItem>
 							)}
-						/>
+						/> */}
 						<FormField
-							control={donationForm.control}
+							control={donatioForm.control}
 							name="targetAmount"
 							render={({ field }) => (
 								<FormItem>
@@ -190,7 +190,7 @@ const DonationPageEditForm: FC<DonationPageEditFormProps> = ({
 							)}
 						/>
 						<FormField
-							control={donationForm.control}
+							control={donatioForm.control}
 							name="expirationDate"
 							render={({ field }) => (
 								<FormItem className="flex flex-col">
@@ -201,7 +201,7 @@ const DonationPageEditForm: FC<DonationPageEditFormProps> = ({
 												<Button
 													variant={'outline'}
 													className={cn(
-														'w-full min-w-[240px] pl-3 text-left font-normal',
+														'w-full pl-3 text-left font-normal',
 														!field.value && 'text-muted-foreground'
 													)}
 												>
@@ -219,10 +219,9 @@ const DonationPageEditForm: FC<DonationPageEditFormProps> = ({
 												mode="single"
 												selected={field.value}
 												onSelect={field.onChange}
-												// disabled={(date) =>
-												// 	date > new Date() || date < new Date('1900-01-01')
-												// }
-												captionLayout="dropdown"
+												disabled={(date: any) =>
+													date > new Date() || date < new Date('1900-01-01')
+												}
 												initialFocus
 											/>
 										</PopoverContent>
@@ -232,15 +231,21 @@ const DonationPageEditForm: FC<DonationPageEditFormProps> = ({
 								</FormItem>
 							)}
 						/>
-						<Button type="submit" disabled={!isChanged}>
-							Update
-						</Button>
+
+						<DialogFooter className="gap-3 pt-6">
+							<DialogClose asChild>
+								<Button type="button" variant="secondary">
+									Close
+								</Button>
+							</DialogClose>
+
+							<Button type="submit">Update</Button>
+						</DialogFooter>
 					</form>
-				</CardContent>
-				<CardFooter></CardFooter>
-			</Form>
-		</Card>
+				</Form>
+			</DialogContent>
+		</Dialog>
 	);
 };
 
-export default DonationPageEditForm;
+export default EditDonationForm;

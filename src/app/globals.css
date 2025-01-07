@@ -78,6 +78,19 @@ body {
   }
 }
 
+.rdp [aria-hidden="true"] {
+  @apply hidden;
+}
+
+.rdp-vhidden {
+  @apply hidden;
+}
+
+select::-webkit-scrollbar {
+  display: none;
+}
+
+
 @layer base {
   * {
     @apply border-border;

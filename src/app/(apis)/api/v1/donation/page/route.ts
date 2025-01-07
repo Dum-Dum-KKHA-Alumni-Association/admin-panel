@@ -4,14 +4,14 @@ import ApiResponse from '@/utils/ApiResponse';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
-	const { title, slug, description, thumbnail, targetAmount, expirationDate } =
+	const { title, description, thumbnail, targetAmount, expirationDate } =
 		await request.json();
 
 	try {
 		const donationDetails = await prisma.donationPage.create({
 			data: {
 				title,
-				slug,
+
 				description,
 				thumbnail,
 				targetAmount,
@@ -41,7 +41,7 @@ export async function GET() {
 			select: {
 				id: true,
 				title: true,
-				slug: true,
+
 				description: true,
 				thumbnail: true,
 				targetAmount: true,
@@ -82,7 +82,6 @@ export async function PUT(request: NextRequest) {
 	const {
 		id,
 		title,
-		slug,
 		description,
 		thumbnail,
 		targetAmount,
@@ -97,7 +96,6 @@ export async function PUT(request: NextRequest) {
 			},
 			data: {
 				title,
-				slug,
 				description,
 				thumbnail,
 				targetAmount,

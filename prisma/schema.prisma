@@ -40,7 +40,6 @@ model User {
 model DonationPage {
   id              String         @id @unique @default(uuid())
   title           String
-  slug            String         @unique
   description     String
   thumbnail       String?
   listOfDonors    Donation[]

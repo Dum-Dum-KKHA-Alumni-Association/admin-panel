@@ -14,6 +14,7 @@ import React from 'react';
 import { DonationChartComponent } from './components/chart-donation';
 
 import DonationForm from './components/form-donation';
+import DonationList from './components/donationList';
 
 const DonationPage = () => {
 	return (
@@ -54,6 +55,7 @@ const DonationPage = () => {
 						</div>
 					</section>
 				</div>
+				<DonationList />
 			</div>
 		</SidebarInset>
 	);
