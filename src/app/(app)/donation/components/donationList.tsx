@@ -11,7 +11,6 @@ import {
 import {
 	DropdownMenu,
 	DropdownMenuContent,
-	DropdownMenuItem,
 	DropdownMenuLabel,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
@@ -23,12 +22,13 @@ import {
 	IndianRupee,
 	Link2,
 	MoreHorizontal,
-	Wrench,
 } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 import { DonationPageDeleteFeature } from './features';
 import { Badge } from '@/components/ui/badge';
+
+import EditDonationForm from './edit-donation';
 
 const DonationList = () => {
 	const { data } = useQuery({
@@ -46,12 +46,9 @@ const DonationList = () => {
 						>
 							<div className="flex w-full">
 								<CardHeader className="w-full p-3">
-									<Link href={`/donation/responses/${page.id}`}>
+									<Link href={`/donation/${page.id}`}>
 										<CardTitle className="flex items-center justify-start gap-2 text-base sm:text-lg">
 											{page.title}{' '}
-											<span className="hidden text-xs font-thin sm:flex">
-												/donation/{page.slug}
-											</span>
 										</CardTitle>
 									</Link>
 									<CardDescription>{page.description}</CardDescription>
@@ -90,16 +87,8 @@ const DonationList = () => {
 											</DropdownMenuTrigger>
 											<DropdownMenuContent align="end">
 												<DropdownMenuLabel>Actions</DropdownMenuLabel>
-												{/* <DropdownMenuItem>Copy Url</DropdownMenuItem>
-												<DropdownMenuSeparator /> */}
 
-												<Link href={`/donation/${page.id}`}>
-													<DropdownMenuItem>
-														{' '}
-														<Wrench />
-														Edit
-													</DropdownMenuItem>
-												</Link>
+												<EditDonationForm pageData={page} />
 												<DonationPageDeleteFeature pageId={page.id} />
 											</DropdownMenuContent>
 										</DropdownMenu>

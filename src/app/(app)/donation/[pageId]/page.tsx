@@ -6,10 +6,33 @@ import {
 	BreadcrumbPage,
 	BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+import { Button } from '@/components/ui/button';
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from '@/components/ui/card';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
+import {
+	ExternalLink,
+	Link2,
+	MoreHorizontal,
+	Trash2,
+	Wrench,
+} from 'lucide-react';
+import Link from 'next/link';
 import React from 'react';
-import DonationPageEditForm from './formEdit-donation';
 
 const CreateDonationPage = async ({
 	params,
@@ -17,14 +40,14 @@ const CreateDonationPage = async ({
 	params: Promise<{ pageId: string }>;
 }) => {
 	const response = await fetch(
-		`${process.env.NEXT_PUBLIC_API_URL}/donation/page/id/${(await params).pageId}`,
+		`${process.env.NEXT_PUBLIC_API_URL}/donation/${(await params).pageId}`,
 		{
 			cache: 'no-store',
 		}
 	);
 	const { data } = await response.json();
 
-	const donationPage: DonationPageResponse = data;
+	const donationResponses: DonorResponse[] = data;
 
 	return (
 		<SidebarInset>
@@ -43,10 +66,7 @@ const CreateDonationPage = async ({
 							</BreadcrumbItem>
 
 							<BreadcrumbSeparator className="hidden md:block" />
-							<BreadcrumbItem>
-								<BreadcrumbPage>Edit</BreadcrumbPage>
-							</BreadcrumbItem>
-							<BreadcrumbSeparator className="hidden md:block" />
+
 							<BreadcrumbItem>
 								<BreadcrumbPage>{(await params).pageId}</BreadcrumbPage>
 							</BreadcrumbItem>
@@ -55,7 +75,89 @@ const CreateDonationPage = async ({
 				</div>
 			</header>
 			<div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-				<DonationPageEditForm donationPage={donationPage} />
+				<h1 className="text-3xl font-bold">Donation Responses</h1>
+				{donationResponses.map(async (response) => (
+					<Card
+						key={response.id}
+						className="flex w-full flex-col justify-between rounded-none"
+					>
+						<div className="flex w-full">
+							<CardHeader className="w-full p-3">
+								<Link
+									href={`/donation/responses/${(await params).pageId}/${response.id}`}
+								>
+									<CardTitle className="flex items-center justify-start gap-2 text-base sm:text-lg">
+										{response.firstName}{' '}
+									</CardTitle>
+								</Link>
+								<CardDescription>{response.presentAddress}</CardDescription>
+							</CardHeader>
+							<CardContent className="flex items-center justify-center px-5 py-0">
+								<div className="flex rounded border">
+									<Link
+										href={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/donation/${response.id}`}
+										target="_blank"
+									>
+										<Button
+											variant={'outline'}
+											className="h-8 w-8 rounded-none p-0"
+										>
+											<ExternalLink />
+										</Button>
+									</Link>
+									<Link href={''} target="_blank">
+										<Button
+											variant={'outline'}
+											className="h-8 w-8 rounded-none p-0"
+										>
+											<Link2 />
+										</Button>
+									</Link>
+
+									<DropdownMenu>
+										<DropdownMenuTrigger asChild>
+											<Button
+												variant={'outline'}
+												className="h-8 w-8 rounded-none p-0"
+											>
+												<span className="sr-only">Open menu</span>
+												<MoreHorizontal />
+											</Button>
+										</DropdownMenuTrigger>
+										<DropdownMenuContent align="end">
+											<DropdownMenuLabel>Actions</DropdownMenuLabel>
+											{/* <DropdownMenuItem>Copy Url</DropdownMenuItem>
+												<DropdownMenuSeparator /> */}
+											<Link href={`/donation/donation-pages`}>
+												<DropdownMenuItem>
+													{' '}
+													<Wrench />
+													Edit
+												</DropdownMenuItem>
+											</Link>
+											<DropdownMenuItem className="text-red-600 hover:text-red-700">
+												{' '}
+												<Trash2 />
+												Delete
+											</DropdownMenuItem>
+										</DropdownMenuContent>
+									</DropdownMenu>
+								</div>
+							</CardContent>
+						</div>
+						<CardFooter className="space-x-3 p-2">
+							{/* <Badge variant={'outline'} className="space-x-3 text-sm">
+								<IndianRupee size={20} /> {page.targetAmount}
+							</Badge>
+							<Badge variant={'outline'} className="space-x-3">
+								<FilePen size={20} /> 323
+							</Badge>
+							<Badge variant={'outline'} className="space-x-3">
+								<FilePen size={20} /> 323
+							</Badge> */}
+						</CardFooter>
+					</Card>
+				))}
 			</div>
 		</SidebarInset>
 	);

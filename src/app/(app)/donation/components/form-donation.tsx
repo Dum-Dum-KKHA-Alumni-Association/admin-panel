@@ -7,7 +7,6 @@ import { z } from 'zod';
 import {
 	Form,
 	FormControl,
-	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
@@ -17,8 +16,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { Textarea } from '@/components/ui/textarea';
-import { CalendarIcon } from 'lucide-react';
-import { Calendar } from '@/components/ui/calendar';
+import { CalendarIcon, Plus } from 'lucide-react';
+
 import {
 	Popover,
 	PopoverContent,
@@ -39,6 +38,7 @@ import {
 } from '@/components/ui/dialog';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { Calendar } from '@/components/ui/calendar';
 
 const DonationForm = () => {
 	const { getToken } = useAuth();
@@ -59,9 +59,8 @@ const DonationForm = () => {
 		try {
 			const formData = {
 				title: values.title,
-				slug: values.slug,
 				description: values.description,
-				thumbnail: values.thumbnail,
+				// thumbnail: values.thumbnail,
 				targetAmount: values.targetAmount,
 				// expirationDate: JSON.stringify(values.expirationDate, null, 2),
 				expirationDate: values.expirationDate.toISOString(),
@@ -90,7 +89,10 @@ const DonationForm = () => {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<Button>Create</Button>
+				<Button>
+					<Plus />
+					Create
+				</Button>
 			</DialogTrigger>
 			<DialogContent className="h-screen overflow-y-auto sm:h-auto sm:max-w-[800px]">
 				<Form {...donatioForm}>
@@ -117,25 +119,7 @@ const DonationForm = () => {
 								</FormItem>
 							)}
 						/>
-						<FormField
-							control={donatioForm.control}
-							name="slug"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>URL</FormLabel>
-									<FormControl>
-										<div className="flex h-fit w-full items-center">
-											<div className="flex h-9 w-1/2 items-center truncate text-ellipsis rounded-l-lg bg-gray-200 px-2 py-1 text-sm text-slate-800 sm:w-[24rem]">
-												{`${process.env.NEXT_PUBLIC_FRONTEND_URL}/donations/`}
-											</div>
 
-											<Input className="rounded-l-none" {...field} />
-										</div>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
 						<FormField
 							control={donatioForm.control}
 							name="description"
@@ -153,7 +137,7 @@ const DonationForm = () => {
 								</FormItem>
 							)}
 						/>
-						<FormField
+						{/* <FormField
 							control={donatioForm.control}
 							name="thumbnail"
 							render={({ field: { ref, onChange } }) => (
@@ -177,7 +161,7 @@ const DonationForm = () => {
 									<FormMessage />
 								</FormItem>
 							)}
-						/>
+						/> */}
 						<FormField
 							control={donatioForm.control}
 							name="targetAmount"
@@ -204,7 +188,7 @@ const DonationForm = () => {
 												<Button
 													variant={'outline'}
 													className={cn(
-														'w-full min-w-[240px] pl-3 text-left font-normal',
+														'w-full pl-3 text-left font-normal',
 														!field.value && 'text-muted-foreground'
 													)}
 												>
@@ -222,10 +206,9 @@ const DonationForm = () => {
 												mode="single"
 												selected={field.value}
 												onSelect={field.onChange}
-												// disabled={(date) =>
-												// 	date > new Date() || date < new Date('1900-01-01')
-												// }
-												captionLayout="dropdown"
+												disabled={(date: any) =>
+													date > new Date() || date < new Date('1900-01-01')
+												}
 												initialFocus
 											/>
 										</PopoverContent>

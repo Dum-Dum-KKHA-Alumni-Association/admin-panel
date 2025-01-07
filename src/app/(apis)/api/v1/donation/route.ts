@@ -10,7 +10,7 @@ export async function GET() {
 			select: {
 				id: true,
 				title: true,
-				slug: true,
+
 				description: true,
 				thumbnail: true,
 				targetAmount: true,
