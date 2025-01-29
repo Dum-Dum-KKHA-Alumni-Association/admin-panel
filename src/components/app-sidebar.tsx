@@ -19,7 +19,7 @@ import {
 import { useUser } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
-import { HandCoins } from 'lucide-react';
+import { HandCoins, LayoutDashboard } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 // const data = {
@@ -168,6 +168,11 @@ import { usePathname } from 'next/navigation';
 const data = {
 	navMain: [
 		{
+			title: 'Dashboard',
+			url: '/',
+			icon: LayoutDashboard,
+		},
+		{
 			title: 'Donations',
 			url: '/donation',
 			icon: HandCoins,
@@ -199,17 +204,17 @@ const data = {
 		// 	],
 		// },
 
-		// {
-		// 	title: 'Managements',
-		// 	url: '/managements',
-		// 	icon: HandCoins,
-		// 	items: [
-		// 		{
-		// 			title: 'Contribution Guide',
-		// 			url: '#',
-		// 		},
-		// 	],
-		// },
+		{
+			title: 'Managements',
+			url: '/managements',
+			icon: HandCoins,
+			items: [
+				{
+					title: 'Contribution Guide',
+					url: '#',
+				},
+			],
+		},
 	],
 };
 
@@ -227,7 +232,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				<SidebarMenu>
 					<SidebarMenuItem>
 						<SidebarMenuButton size="lg" asChild>
-							<Link href="/">
+							<Link href="/" className="flex">
 								{/* <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"> */}
 								<div className="flex aspect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground">
 									<Image
@@ -251,7 +256,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 					<SidebarMenu>
 						{data.navMain.map((item) => (
 							<SidebarMenuItem key={item.title}>
-								<SidebarMenuButton asChild isActive={pathname === item.url}>
+								<SidebarMenuButton
+									className="py-4 text-lg"
+									variant={'outline'}
+									asChild
+									isActive={pathname === item.url}
+								>
 									<Link href={item.url} className="font-bold">
 										<item.icon />
 										{item.title}
