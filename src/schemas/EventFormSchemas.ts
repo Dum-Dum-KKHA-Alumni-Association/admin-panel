@@ -9,7 +9,10 @@ export const venueEventCreateFormSchema = z.object({
 	status: z.string({
 		required_error: 'Status is required',
 	}),
-	eventType: z
+	mode: z.string({
+		required_error: 'Event Type is required',
+	}),
+	location: z
 		.string({
 			required_error: 'Event Type is required',
 		})

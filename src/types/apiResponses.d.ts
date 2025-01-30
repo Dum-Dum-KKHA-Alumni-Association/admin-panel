@@ -61,3 +61,24 @@ interface PaymentResponse {
 	createdAt: ISOStringFormat;
 	updatedAt: ISOStringFormat;
 }
+
+////////////////////////////////////////////////////////////////////////
+// Events API Response Types
+interface EventResponse {
+	id: string;
+	title: string;
+	description: string;
+	date: string;
+	mode: string;
+	thumbnail: string | null;
+	gallery: string[];
+	status: string;
+	location: string;
+	merchandise: string;
+	merchandiseType: string;
+	foodAvailable: string;
+	eventPaymentType: string;
+	eventPaymentMode: string;
+	createdAt: ISOStringFormat;
+	updatedAt: ISOStringFormat;
+}
