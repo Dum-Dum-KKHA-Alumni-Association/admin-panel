@@ -40,7 +40,7 @@ const CreateDonationPage = async ({
 	params: Promise<{ pageId: string }>;
 }) => {
 	const response = await fetch(
-		`${process.env.NEXT_PUBLIC_API_URL}/donation/${(await params).pageId}`,
+		`${process.env.NEXT_PUBLIC_BACKEND_ENDPOINT_URL}/donation/${(await params).pageId}`,
 		{
 			cache: 'no-store',
 		}
@@ -68,7 +68,7 @@ const CreateDonationPage = async ({
 							<BreadcrumbSeparator className="hidden md:block" />
 
 							<BreadcrumbItem>
-								<BreadcrumbPage>{(await params).pageId}</BreadcrumbPage>
+								<BreadcrumbPage>Responses</BreadcrumbPage>
 							</BreadcrumbItem>
 						</BreadcrumbList>
 					</Breadcrumb>

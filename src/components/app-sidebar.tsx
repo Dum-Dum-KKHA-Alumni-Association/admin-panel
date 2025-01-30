@@ -19,7 +19,7 @@ import {
 import { useUser } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
-import { HandCoins, LayoutDashboard } from 'lucide-react';
+import { HandCoins, LayoutDashboard, TicketPercent } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 // const data = {
@@ -176,45 +176,45 @@ const data = {
 			title: 'Donations',
 			url: '/donation',
 			icon: HandCoins,
+			// items: [
+			// 	{
+			// 		title: 'Responses',
+			// 		url: '/donation/responses',
+			// 	},
+			// ],
+		},
+		{
+			title: 'Event Management',
+			url: '/event-management',
+			icon: TicketPercent,
 			items: [
 				{
-					title: 'Responses',
-					url: '/donation/responses',
+					title: 'Add Events ',
+					url: '/event-management/create',
+				},
+				{
+					title: 'All Events',
+					url: '/event-management/view',
+					// isActive: true,
+				},
+				{
+					title: 'Payments',
+					url: '/events/payments',
 				},
 			],
 		},
+
 		// {
-		// 	title: 'Events',
-		// 	url: '/events',
-		// 	icon: TicketPercent,
+		// 	title: 'Event Managements',
+		// 	url: '#',
+		// 	icon: BookText ,
 		// 	items: [
 		// 		{
-		// 			title: 'Create New Events ',
-		// 			url: '/events/create',
-		// 		},
-		// 		{
-		// 			title: 'View All Events',
-		// 			url: '/events/view',
-		// 			// isActive: true,
-		// 		},
-		// 		{
-		// 			title: 'Payments',
-		// 			url: '/events/payments',
+		// 			title: 'Add Event',
+		// 			url: 'event-ma/create',
 		// 		},
 		// 	],
 		// },
-
-		{
-			title: 'Managements',
-			url: '/managements',
-			icon: HandCoins,
-			items: [
-				{
-					title: 'Contribution Guide',
-					url: '#',
-				},
-			],
-		},
 	],
 };
 
@@ -255,14 +255,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				<SidebarGroup>
 					<SidebarMenu>
 						{data.navMain.map((item) => (
-							<SidebarMenuItem key={item.title}>
+							<SidebarMenuItem key={item.title} className="my-1">
 								<SidebarMenuButton
 									className="py-4 text-lg"
 									variant={'outline'}
 									asChild
 									isActive={pathname === item.url}
 								>
-									<Link href={item.url} className="font-bold">
+									<Link href={item.url}>
 										<item.icon />
 										{item.title}
 									</Link>
