@@ -19,7 +19,7 @@ import {
 import { useUser } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
-import { HandCoins } from 'lucide-react';
+import { HandCoins, LayoutDashboard, TicketPercent } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 // const data = {
@@ -168,45 +168,50 @@ import { usePathname } from 'next/navigation';
 const data = {
 	navMain: [
 		{
+			title: 'Dashboard',
+			url: '/',
+			icon: LayoutDashboard,
+		},
+		{
 			title: 'Donations',
 			url: '/donation',
 			icon: HandCoins,
+			// items: [
+			// 	{
+			// 		title: 'Responses',
+			// 		url: '/donation/responses',
+			// 	},
+			// ],
+		},
+		{
+			title: 'Event Management',
+			url: '/event-management',
+			icon: TicketPercent,
 			items: [
 				{
-					title: 'Responses',
-					url: '/donation/responses',
+					title: 'Add Events ',
+					url: '/event-management/create',
+				},
+				{
+					title: 'All Events',
+					url: '/event-management/view',
+					// isActive: true,
+				},
+				{
+					title: 'Payments',
+					url: '/events/payments',
 				},
 			],
 		},
-		// {
-		// 	title: 'Events',
-		// 	url: '/events',
-		// 	icon: TicketPercent,
-		// 	items: [
-		// 		{
-		// 			title: 'Create New Events ',
-		// 			url: '/events/create',
-		// 		},
-		// 		{
-		// 			title: 'View All Events',
-		// 			url: '/events/view',
-		// 			// isActive: true,
-		// 		},
-		// 		{
-		// 			title: 'Payments',
-		// 			url: '/events/payments',
-		// 		},
-		// 	],
-		// },
 
 		// {
-		// 	title: 'Managements',
-		// 	url: '/managements',
-		// 	icon: HandCoins,
+		// 	title: 'Event Managements',
+		// 	url: '#',
+		// 	icon: BookText ,
 		// 	items: [
 		// 		{
-		// 			title: 'Contribution Guide',
-		// 			url: '#',
+		// 			title: 'Add Event',
+		// 			url: 'event-ma/create',
 		// 		},
 		// 	],
 		// },
@@ -227,7 +232,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				<SidebarMenu>
 					<SidebarMenuItem>
 						<SidebarMenuButton size="lg" asChild>
-							<Link href="/">
+							<Link href="/" className="flex">
 								{/* <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"> */}
 								<div className="flex aspect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground">
 									<Image
@@ -250,9 +255,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				<SidebarGroup>
 					<SidebarMenu>
 						{data.navMain.map((item) => (
-							<SidebarMenuItem key={item.title}>
-								<SidebarMenuButton asChild isActive={pathname === item.url}>
-									<Link href={item.url} className="font-bold">
+							<SidebarMenuItem key={item.title} className="my-1">
+								<SidebarMenuButton
+									className="py-4 text-lg"
+									variant={'outline'}
+									asChild
+									isActive={pathname === item.url}
+								>
+									<Link href={item.url}>
 										<item.icon />
 										{item.title}
 									</Link>
