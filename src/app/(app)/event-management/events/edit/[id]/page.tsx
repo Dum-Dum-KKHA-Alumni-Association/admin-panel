@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 import {
 	Breadcrumb,
@@ -46,9 +46,25 @@ import {
 import axios from 'axios';
 import { useAuth } from '@clerk/nextjs';
 import toast from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
-const CreateVenueEvent = () => {
+const EditAnEvent = () => {
+	// const [eventDetails, setEventDetails] = useState<EventResponse>();
+
+	const params = useParams<{ id: string }>();
+
+	const fetchEventDetails = useCallback(async () => {
+		const response = await axios(
+			`${process.env.NEXT_PUBLIC_API_ENDPOINT_URL}/events/${params.id}`
+		);
+		console.log(response.data.data);
+		// setEventDetails(response.data.data);
+	}, [params.id]);
+
+	useEffect(() => {
+		fetchEventDetails();
+	}, [fetchEventDetails]);
+
 	const { getToken } = useAuth();
 	const router = useRouter();
 	const form = useForm<z.infer<typeof venueEventCreateFormSchema>>({
@@ -414,4 +430,4 @@ const CreateVenueEvent = () => {
 	);
 };
 
-export default CreateVenueEvent;
+export default EditAnEvent;

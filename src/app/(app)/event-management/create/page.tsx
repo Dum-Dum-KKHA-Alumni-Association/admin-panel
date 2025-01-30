@@ -9,6 +9,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
+import { House } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
@@ -22,9 +23,12 @@ const CreateDonationPage = () => {
 					<Separator orientation="vertical" className="mr-2 h-4" />
 					<Breadcrumb>
 						<BreadcrumbList>
-							{/* <BreadcrumbItem className="hidden md:block">
-								<BreadcrumbLink href="/">Dashboard</BreadcrumbLink>
-							</BreadcrumbItem> */}
+							<BreadcrumbItem className="hidden md:block">
+								<BreadcrumbLink href="/">
+									{' '}
+									<House size={20} />
+								</BreadcrumbLink>
+							</BreadcrumbItem>
 							<BreadcrumbSeparator className="hidden md:block" />
 							<BreadcrumbItem className="hidden md:block">
 								<BreadcrumbLink href="/event-management">

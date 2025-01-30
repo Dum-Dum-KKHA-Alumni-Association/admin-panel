@@ -194,7 +194,7 @@ const data = {
 				},
 				{
 					title: 'All Events',
-					url: '/event-management/view',
+					url: '/event-management/events',
 					// isActive: true,
 				},
 				{
