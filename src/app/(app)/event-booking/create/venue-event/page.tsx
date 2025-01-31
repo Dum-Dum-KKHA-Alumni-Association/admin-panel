@@ -272,9 +272,9 @@ const CreateVenueEvent = () => {
 							name="location"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Address*</FormLabel>
+									<FormLabel>Location*</FormLabel>
 									<FormControl>
-										<Textarea placeholder="Description" {...field} />
+										<Input placeholder="Event Location" {...field} />
 									</FormControl>
 
 									<FormMessage />

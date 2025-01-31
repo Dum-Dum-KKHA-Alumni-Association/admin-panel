@@ -19,7 +19,12 @@ import {
 import { useUser } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
-import { HandCoins, LayoutDashboard, TicketPercent } from 'lucide-react';
+import {
+	Armchair,
+	HandCoins,
+	LayoutDashboard,
+	TicketPercent,
+} from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 // const data = {
@@ -185,7 +190,7 @@ const data = {
 		},
 		{
 			title: 'Event Management',
-			url: '/event-management',
+			url: '#',
 			icon: TicketPercent,
 			items: [
 				{
@@ -200,6 +205,33 @@ const data = {
 				{
 					title: 'Payments',
 					url: '/events/payments',
+				},
+			],
+		},
+		{
+			title: 'Event Bookings',
+			url: '#',
+			icon: Armchair,
+			items: [
+				{
+					title: 'Settings ',
+					url: '/event-booking/settings',
+				},
+				{
+					title: 'All Bookings',
+					url: '/event-booking',
+				},
+				{
+					title: 'Completed Bookings',
+					url: '/event-booking/completed',
+				},
+				{
+					title: 'Pending Bookings',
+					url: '/event-booking/pending',
+				},
+				{
+					title: 'Rejected Bookings',
+					url: '/event-booking/rejected',
 				},
 			],
 		},

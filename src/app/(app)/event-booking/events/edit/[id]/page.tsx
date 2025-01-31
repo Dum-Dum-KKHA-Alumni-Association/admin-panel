@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 import {
 	Breadcrumb,
@@ -46,9 +46,25 @@ import {
 import axios from 'axios';
 import { useAuth } from '@clerk/nextjs';
 import toast from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
-const CreateVenueEvent = () => {
+const EditAnEvent = () => {
+	// const [eventDetails, setEventDetails] = useState<EventResponse>();
+
+	const params = useParams<{ id: string }>();
+
+	const fetchEventDetails = useCallback(async () => {
+		const response = await axios(
+			`${process.env.NEXT_PUBLIC_API_ENDPOINT_URL}/events/${params.id}`
+		);
+		console.log(response.data.data);
+		// setEventDetails(response.data.data);
+	}, [params.id]);
+
+	useEffect(() => {
+		fetchEventDetails();
+	}, [fetchEventDetails]);
+
 	const { getToken } = useAuth();
 	const router = useRouter();
 	const form = useForm<z.infer<typeof venueEventCreateFormSchema>>({
@@ -132,20 +148,6 @@ const CreateVenueEvent = () => {
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 						<FormField
 							control={form.control}
-							name="thumbnail"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Thumbnail</FormLabel>
-									<FormControl>
-										<Input type="url" placeholder="Thumbnail link" {...field} />
-									</FormControl>
-
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
 							name="title"
 							render={({ field }) => (
 								<FormItem>
@@ -202,9 +204,9 @@ const CreateVenueEvent = () => {
 												mode="single"
 												selected={field.value}
 												onSelect={field.onChange}
-												// disabled={(date: any) =>
-												// 	date > new Date() || date < new Date('1900-01-01')
-												// }
+												disabled={(date: any) =>
+													date > new Date() || date < new Date('1900-01-01')
+												}
 												initialFocus
 											/>
 										</PopoverContent>
@@ -428,4 +430,4 @@ const CreateVenueEvent = () => {
 	);
 };
 
-export default CreateVenueEvent;
+export default EditAnEvent;
