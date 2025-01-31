@@ -19,8 +19,8 @@ function Calendar({
 		<DayPicker
 			showOutsideDays={showOutsideDays}
 			captionLayout="dropdown"
-			fromYear={1920}
-			toYear={new Date().getFullYear()}
+			fromYear={2010}
+			toYear={new Date().getFullYear() + 15}
 			className={cn('p-3', className)}
 			classNames={{
 				dropdown: 'border rounded-lg p-2 w-full',

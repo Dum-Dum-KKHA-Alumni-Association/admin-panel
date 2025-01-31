@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export const venueEventCreateFormSchema = z.object({
+	thumbnail: z.string().min(2).optional(),
 	title: z.string().min(2).max(50),
 	description: z.string().max(100),
 	date: z.date({

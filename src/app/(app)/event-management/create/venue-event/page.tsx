@@ -132,6 +132,20 @@ const CreateVenueEvent = () => {
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 						<FormField
 							control={form.control}
+							name="thumbnail"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Thumbnail</FormLabel>
+									<FormControl>
+										<Input type="url" placeholder="Thumbnail link" {...field} />
+									</FormControl>
+
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
 							name="title"
 							render={({ field }) => (
 								<FormItem>
@@ -188,9 +202,9 @@ const CreateVenueEvent = () => {
 												mode="single"
 												selected={field.value}
 												onSelect={field.onChange}
-												disabled={(date: any) =>
-													date > new Date() || date < new Date('1900-01-01')
-												}
+												// disabled={(date: any) =>
+												// 	date > new Date() || date < new Date('1900-01-01')
+												// }
 												initialFocus
 											/>
 										</PopoverContent>
